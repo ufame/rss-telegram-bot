@@ -9,6 +9,25 @@ let bot = new TelegramBotApi(process.env.TOKEN, {polling: true});
 
 const date = new Date();
 
+//require protocol
+let isValidURL = (string => {
+    let res = string.match(/https?:\/\/.?(www\.)?[-a-zA-Z\d@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z\d@:%_+.~#?&/=]*)/g);
+
+    return (res !== null);
+})
+
+let formatTime = (seconds => {
+    let hrs = Math.floor(seconds / (60 * 60));
+    let min = Math.floor(seconds % (60 * 60) / 60);
+    let sec = Math.floor(seconds % 60);
+
+    return pad(hrs) + ':' + pad(min) + ':' + pad(sec);
+})
+
+let pad = (num => {
+    return (num < 10 ? '0' : '') + num;
+})
+
 console.log(`Запуск ${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()} - ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`);
 
 botCommands = [
@@ -26,9 +45,9 @@ botCommands = [
     }
 ];
 
-bot.setMyCommands(botCommands);
+bot.setMyCommands(botCommands).then(r => console.log(`Команды бота добавлены? ${r}`));
 
-bot.onText(/\/start/, function (msg) {
+bot.onText(/\/start/, (msg) => {
     let chatId = msg.chat.id;
 
     let botOptions = {};
@@ -45,7 +64,7 @@ bot.onText(/\/start/, function (msg) {
     bot.sendMessage(chatId, answer, botOptions);
 })
 
-bot.onText(/\/rss (.+)/, function (msg, match) {
+bot.onText(/\/rss (.+)/, (msg, match) => {
     let chatId = msg.chat.id;
     let rss_url = match[1];
 
@@ -81,7 +100,7 @@ bot.onText(/\/rss (.+)/, function (msg, match) {
     })();
 })
 
-bot.onText(/\/info/, function (msg) {
+bot.onText(/\/info/, (msg) => {
     let chatId = msg.chat.id;
 
     let botOptions = {};
@@ -93,26 +112,8 @@ bot.onText(/\/info/, function (msg) {
     }
 
     let answer = 'Привет!\n\n';
-    answer += `Аптайм ${format(process.uptime())}\n`;
+    answer += `Аптайм ${formatTime(process.uptime())}\n`;
     answer += `Платформа ${os.platform()}`;
 
     bot.sendMessage(chatId, answer, botOptions);
 })
-
-function isValidURL(string) {
-    let res = string.match(/https?:\/\/.?(www\.)?[-a-zA-Z\d@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z\d@:%_+.~#?&/=]*)/g);
-
-    return (res !== null)
-}
-
-function format(seconds) {
-    let hrs = Math.floor(seconds / (60 * 60));
-    let min = Math.floor(seconds % (60 * 60) / 60);
-    let sec = Math.floor(seconds % 60);
-
-    return pad(hrs) + ':' + pad(min) + ':' + pad(sec);
-}
-
-function pad(num) {
-    return (num < 10 ? '0' : '') + num;
-}
