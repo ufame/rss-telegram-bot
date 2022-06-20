@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https');
 
 let pad = (num => {
     return (num < 10 ? '0' : '') + num;
@@ -19,7 +19,7 @@ let isValidURL = (string => {
 })
 
 let isBadResponse = (string => {
-    http.get(string, (res) => {
+    https.get(string, (res) => {
         return (res.statusCode < 200 || res.statusCode > 299);
     })
 })
