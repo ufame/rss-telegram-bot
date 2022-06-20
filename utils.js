@@ -18,11 +18,9 @@ let isValidURL = (string => {
     return (res !== null);
 })
 
-let isBadResponse = (string => {
-    https.get(string, (res) => {
-        return (res.statusCode < 200 || res.statusCode > 299);
-    })
-})
+let isBadResponse = string => new Promise((resolve, reject) =>
+    https.get(string, res => res.statusCode < 200 || res.statusCode > 299 ? resolve(true) : resolve(false))
+);
 
 module.exports = {
     pad,
