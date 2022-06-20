@@ -1,3 +1,5 @@
+const http = require('http');
+
 let pad = (num => {
     return (num < 10 ? '0' : '') + num;
 })
@@ -16,8 +18,15 @@ let isValidURL = (string => {
     return (res !== null);
 })
 
+let isBadResponse = (string => {
+    http.get(string, (res) => {
+        return (res.statusCode < 200 || res.statusCode > 299);
+    })
+})
+
 module.exports = {
     pad,
     formatTime,
-    isValidURL
+    isValidURL,
+    isBadResponse
 };

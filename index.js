@@ -58,7 +58,7 @@ bot.onText(/\/rss (.+)/, async (msg, match) => {
             disable_web_page_preview: true
         };
 
-        if (!utils.isValidURL(rss_url)) {
+        if (!utils.isValidURL(rss_url) || utils.isBadResponse(rss_url)) {
             await bot.sendMessage(chatId, 'Укажите <code>rss</code> ленту с которой хотите получить информацию.\nПример: <code>/rss https://reddit.com/.rss</code>', botOptions);
 
             return;
