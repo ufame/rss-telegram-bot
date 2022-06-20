@@ -28,7 +28,7 @@ botCommands = [
     }
 ];
 
-bot.setMyCommands(botCommands).then(r => console.log('Команды бота добавлены'));
+bot.setMyCommands(botCommands).then(() => console.log('Команды бота добавлены'));
 
 bot.onText(/\/start/, (msg) => {
     let chatId = msg.chat.id;

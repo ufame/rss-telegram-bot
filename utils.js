@@ -1,4 +1,4 @@
-const https = require('https');
+const axios = require('axios');
 
 let pad = (num => {
     return (num < 10 ? '0' : '') + num;
@@ -18,9 +18,15 @@ let isValidURL = (string => {
     return (res !== null);
 })
 
-let isBadResponse = string => new Promise((resolve, reject) =>
-    https.get(string, res => res.statusCode < 200 || res.statusCode > 299 ? resolve(true) : resolve(false))
-);
+let isBadResponse = string => new Promise((resolve, reject) => {
+    try {
+        axios.get(string)
+            .then(response => resolve(response.status < 200 || response.status > 299))
+            .catch(()=> resolve(true))
+    } catch (e) {
+        console.log(e);
+    }
+})
 
 module.exports = {
     pad,
